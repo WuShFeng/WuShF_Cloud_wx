@@ -24,7 +24,10 @@ Page({
   initCanvas() {
     const query = wx.createSelectorQuery()
     query.select('#canvas')
-      .fields({ node: true, size: true })
+      .fields({
+        node: true,
+        size: true
+      })
       .exec((res) => {
         const canvas = res[0].node;
         const ctx = canvas.getContext('2d');
@@ -101,19 +104,12 @@ Page({
     wx.scanCode({
       scanType: ["wxCode"],
       success: (res) => {
-        const queryString = res.path.split('?')[1];
-        const pairs = queryString.split("&");
-        let scene = "";
-        for (const pair of pairs) {
-          const [key, value] = pair.split("=");
-          if (key === "scene") {
-            scene = value;
-            break;
-          }
+        const queryString = decodeURIComponent(res.path.split('?')[1]);
+        if (queryString.startsWith("scene=")) {
+          this.setData({
+            session: queryString.substr(6)
+          })
         }
-        this.setData({
-          session: scene
-        })
       }
     })
   },
