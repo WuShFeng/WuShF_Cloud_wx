@@ -1,0 +1,13 @@
+.container {
+  margin: 30rpx;
+  background-color: #eee;
+  border-radius: 30rpx;
+  padding: 30rpx;
+
+  .line {
+    display: flex;
+    .title{
+      margin-right: auto;
+    }
+  }
+}

@@ -1,0 +1,43 @@
+.session {
+  display: flex;
+  background-color: #f0f0f0;
+  // width: 300rpx;
+  margin: 0 auto;
+  width: 400rpx;
+  height: 100rpx;
+  border-radius: 30rpx;
+  padding: 0 20rpx 0 30rpx;
+  transition: width 0.5s;
+
+  &.focus {
+    width: 500rpx;
+  }
+
+  .input {
+    height: 100%;
+    width: 100%;
+    line-height: 100%;
+  }
+
+  .image {
+    margin-left: auto;
+    height: 100rpx;
+    width: 100rpx;
+  }
+}
+
+.container {
+  height: 500rpx;
+  width: 500rpx;
+  position: relative;
+  margin: 100rpx auto;
+
+  #canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 500rpx;
+    width: 500rpx;
+    z-index: 0;
+  }
+}

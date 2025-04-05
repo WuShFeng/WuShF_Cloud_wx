@@ -1,0 +1,27 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/user/user"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarBackgroundColor": "#ffffff"
+  },
+  "tabBar": {
+    "selectedColor": "#333",
+    "list": [{
+      "pagePath": "pages/index/index",
+      "text": "验证",
+      "iconPath": "./images/social.png",
+      "selectedIconPath": "./images/social_fill.png"
+    },{
+      "pagePath": "pages/user/user",
+      "text": "用户",
+      "iconPath": "./images/user.png",
+      "selectedIconPath": "./images/user_fill.png"
+    }]
+  },
+  "componentFramework": "glass-easel",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

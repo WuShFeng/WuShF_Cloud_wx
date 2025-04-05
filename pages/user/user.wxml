@@ -1,0 +1,12 @@
+<!--pages/user/user.wxml-->
+<view class="container">
+  <view class="line" bindtap="changeUsername">
+    <view class="title">
+      用户名
+    </view>
+    <view class="username">
+      {{username}}
+    </view>
+  </view>
+
+</view>

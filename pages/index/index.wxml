@@ -1,0 +1,7 @@
+<view class="container">
+  <canvas type="2d" id="canvas" bind:tap="authorize"></canvas>
+</view>
+<view class="session {{isFocus ? 'focus' : ''}}">
+  <input class="input" model:value="{{session}}" bindfocus="changeForce" bindblur="changeForce" />
+  <image class="image" src="../../images/scan.png" mode="aspectFit" bindtap="onScan" />
+</view>
