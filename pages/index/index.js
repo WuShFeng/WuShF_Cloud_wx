@@ -1,3 +1,8 @@
+import {
+  getQrCodeStatus,
+  confirm
+} from "../../apis/auth";
+
 Page({
   canvas: null,
   ctx: null,
@@ -16,6 +21,7 @@ Page({
       this.setData({
         session: scene
       })
+      this.getSessionStatus();
     }
   },
   onReady() {
@@ -109,17 +115,83 @@ Page({
           this.setData({
             session: queryString.substr(6)
           })
+          this.getSessionStatus();
         }
       }
     })
   },
+  getSessionStatus() {
+    getQrCodeStatus(this.data.session, (res) => {
+      console.log(res);
+      if (res.code == 200) {
+        if (res.data.status == "SCANNED" && res.data.userToken == wx.getStorageSync('token')) {
+          this.authorize();
+        } else {
+          wx.showModal({
+            title: '二维码已过期',
+            showCancel: false
+          })
+          return;
+        }
+      } else {
+        wx.showModal({
+          title: '检查二维码状态',
+          showCancel: false
+        })
+      }
+    });
+  },
+  switchCanvasStatus(status) {
+    //0 起始
+    if (status == 0) {
+      this.speed = Math.PI / 180;
+      this.color0 = "#dee2ff";
+      this.color1 = "#c2f8cb";
+    }
+    //1提交时
+    else if (status == 1) {
+      this.speed = Math.PI / 180 * 10;
+      this.color0 = "#dee2ff";
+      this.color1 = "#c2f8cb";
+    }
+    //2授权失败
+    else if (status == 2) {
+      this.speed = Math.PI / 180;
+      this.color0 = "#600";
+      this.color1 = "#e00";
+    }
+  },
   authorize() {
-    this.speed = Math.PI / 180 * 10;
+    if (this.data.session.length != 6) {
+      wx.showModal({
+        title: '请扫码或手动填写临时凭证',
+        showCancel: false
+      })
+      return;
+    }
+    this.switchCanvasStatus(1);
     wx.showModal({
       title: "确认授权",
       content: "授权后该终端的一切操作将以你的身份进行",
       success: (res) => {
-        console.log(res);
+        if (res.confirm) {
+          confirm(this.data.session, (res) => {
+            if (res.code == 200 && res.data.status == "CONFIRMED") {
+              wx.showModal({
+                title: '授权成功',
+                showCancel: false
+              })
+              this.switchCanvasStatus(0);
+              return;
+            }
+            wx.showModal({
+              title: '授权失败',
+              content: '请检查自身权限',
+              showCancel: false
+            })
+            this.switchCanvasStatus(2);
+          })
+        }
       }
     })
   }
