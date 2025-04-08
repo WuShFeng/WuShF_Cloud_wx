@@ -1,5 +1,5 @@
 <view class="container">
-  <canvas type="2d" id="canvas" bind:tap="authorize"></canvas>
+  <canvas type="2d" id="canvas" bind:tap="getSessionStatus"></canvas>
 </view>
 <view class="session {{isFocus ? 'focus' : ''}}">
   <input class="input" model:value="{{session}}" bindfocus="changeForce" bindblur="changeForce" />

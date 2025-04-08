@@ -2,7 +2,9 @@ import {
   getQrCodeStatus,
   confirm
 } from "../../apis/auth";
-
+import {
+  parseJwtPayload
+} from "../../utils/jwt";
 Page({
   canvas: null,
   ctx: null,
@@ -121,21 +123,42 @@ Page({
     })
   },
   getSessionStatus() {
+    if (this.data.session.length != 6) {
+      wx.showModal({
+        title: '请扫码或手动填写临时凭证',
+        showCancel: false
+      })
+      return;
+    }
     getQrCodeStatus(this.data.session, (res) => {
       console.log(res);
       if (res.code == 200) {
-        if (res.data.status == "SCANNED" && res.data.userToken == wx.getStorageSync('token')) {
-          this.authorize();
-        } else {
-          wx.showModal({
-            title: '二维码已过期',
-            showCancel: false
-          })
-          return;
+        if (res.data.status == "SCANNED") {
+          if (parseJwtPayload(res.data.userToken).auth == parseJwtPayload(wx.getStorageSync('token')).auth)
+            this.authorize();
+          else {
+            wx.showModal({
+              title: '二维码已被扫描',
+              showCancel: false
+            })
+          }
+        } else if (res.data.status == "CONFIRMED") {
+          if (parseJwtPayload(res.data.userToken).auth == parseJwtPayload(wx.getStorageSync('token')).auth)
+            wx.showModal({
+              title: '二维码已使用',
+              showCancel: false
+            })
+          else {
+            wx.showModal({
+              title: '二维码已过期',
+              showCancel: false
+            })
+          }
         }
       } else {
         wx.showModal({
-          title: '检查二维码状态',
+          title: "二维码无效",
+          content: res.message,
           showCancel: false
         })
       }
@@ -162,13 +185,6 @@ Page({
     }
   },
   authorize() {
-    if (this.data.session.length != 6) {
-      wx.showModal({
-        title: '请扫码或手动填写临时凭证',
-        showCancel: false
-      })
-      return;
-    }
     this.switchCanvasStatus(1);
     wx.showModal({
       title: "确认授权",
