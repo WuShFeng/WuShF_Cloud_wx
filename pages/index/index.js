@@ -81,7 +81,7 @@ Page({
     const y = this.canvas.height / 2;
     ctx.fillStyle = 'black';
     const fontSize = this.canvas.width / 6;
-    ctx.font = fontSize + 'px Arial';
+    ctx.font = fontSize + 'px JetBrainsMono';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(this.text, x, y);
@@ -141,6 +141,7 @@ Page({
               title: '二维码已被扫描',
               showCancel: false
             })
+            this.switchCanvasStatus(2);
           }
         } else if (res.data.status == "CONFIRMED") {
           if (parseJwtPayload(res.data.userToken).auth == parseJwtPayload(wx.getStorageSync('token')).auth)
@@ -152,7 +153,8 @@ Page({
             wx.showModal({
               title: '二维码已过期',
               showCancel: false
-            })
+            });
+            this.switchCanvasStatus(2);
           }
         }
       } else {
@@ -161,6 +163,7 @@ Page({
           content: res.message,
           showCancel: false
         })
+        this.switchCanvasStatus(2);
       }
     });
   },
@@ -207,6 +210,8 @@ Page({
             })
             this.switchCanvasStatus(2);
           })
+        }else{
+          this.switchCanvasStatus(0);
         }
       }
     })
